@@ -1,0 +1,450 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #06060A;
+    margin: 0;
+    display: flex;
+}
+
+h1, h2 {
+    margin: 0;
+    color: #B1B0B0;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+p {
+    margin: 0;
+}
+
+a {
+    color: #0f1278;
+}
+
+.chat {
+    width: calc(60% - 4px);
+    margin: 0% 0% 0% 20%;
+    border: 2px solid #000;
+}
+
+/*----------------------- Header ------------------------------ */
+
+.chat_header {
+    background-color: #171A25;
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5%;
+}
+
+.sidebar {
+    cursor: pointer;
+}
+
+/*----------------------- Body ------------------------------ */
+
+.chat_body {
+    height: 80vh;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    position: relative;
+}
+
+.dropplace_container {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    opacity: 0.8;
+    visibility: hidden;
+    z-index: 100;
+}
+
+.dropplace {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    margin: 10px;
+    border: 2px dashed #006363;
+}
+
+.dropplace::after {
+    content: 'Put the file here';
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.clip_body {
+    display: none;
+    background-color: #171A25;
+    width: 100px;
+    height: 100px;
+    color: write;
+    position: absolute;
+    bottom: 50px;
+    z-index: 1;
+}
+
+.clip_active {
+    display: block;
+}
+
+.clip_body_item {
+    font-size: 18px;
+    position: relative;
+    cursor: pointer;
+    padding-left: 35px;
+}
+
+.clip_body_item:hover {
+    color: #B1B0B0;
+}
+
+.clip_body_item::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 5px;
+    top: 5px;
+}
+
+.audio::before {
+    background: no-repeat center/contain url('../img/audio.png');
+}
+
+.video::before {
+    background: no-repeat center/contain url('../img/video.png');
+}
+
+.file::before {
+    background: no-repeat center/contain url('../img/file.png');
+}
+
+.geo::before {
+    background: no-repeat center/contain url('../img/geo.png');
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    content: '';
+    left: 1px;
+    top: 1px;
+}
+
+.link::before {
+    background: no-repeat center/contain url('../img/link.png');
+}
+
+.image::before {
+    background: no-repeat center/contain url('../img/image.png');
+}
+
+.favorite::before {
+    background: no-repeat center/contain url('../img/favorite.png');
+}
+/*----------------------- Message ------------------------------ */
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.pin_mesg {
+    display: none;
+    background-color: #171A25;
+    border: 2px solid #06060A;
+}
+
+.pin_content_body {
+    height: 40px;
+}
+
+.pin_mesg_active {
+    display: flex;
+}
+
+.pin_content {
+    padding-left: 10px;
+}
+
+.close_pin {
+    cursor: pointer;
+}
+
+.expand_pin {
+    cursor: pointer;
+}
+
+.message {
+    display: block;
+    background-color: #171A25;
+    border-radius: 5px;       
+    margin: 1.5%;
+    min-width: 100px;
+    max-width: 400px;
+}   
+
+.message_header {
+    display: flex;
+    justify-content: flex-end;
+    height: 17px;
+    padding-bottom: 1px;
+    position: relative;
+}
+
+.tools {
+    display: none;
+    position: absolute;
+}
+
+.message_header:hover .tools{
+    display: flex;
+}
+
+.message_header:hover {
+    border-bottom: 1px solid #06060A;
+}
+
+.message_header_img {
+    padding-left: 5px;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
+
+.pin {
+    background: no-repeat center/contain url('../img/pin.png');
+}
+
+.bin {
+    background: no-repeat center/contain url('../img/bin.png');
+}
+
+.favorite_inactive {
+    background: no-repeat center/contain url('../img/favorite.png');
+}
+
+.favorite_active {
+    background: no-repeat center/contain url('../img/favoriteFill.png');
+}
+
+.message_body {
+    padding: 1% 5%;
+}
+
+.message_body p {
+    padding-bottom: 5px;
+}
+
+.geo_mesg {
+    position: relative;
+    padding-left: 20px;
+}
+
+.message_file::before {
+    content: '';
+    position: absolute;
+    background: no-repeat center/contain url('../img/file.png');
+    width: 20px;
+    height: 20px;
+    left: 1px;
+}
+
+.message_file {
+    display: block;
+    position: relative;
+    padding-left: 25px;
+    padding-right: 10px;
+}
+
+.message_media {
+    display: block;
+    max-width: 100%;
+}
+
+.message_footer {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    height: 17px;
+    font-size: 14px;
+    padding-top: 1px;
+    position: relative;
+}
+
+.date {
+    display: none;
+    position: absolute;
+}
+
+.message_footer:hover .date {
+    display: block;
+}
+
+.message_footer:hover {
+    border-top: 1px solid #06060A;
+}
+
+/*----------------------- Footer ------------------------------ */
+
+.chat_footer {
+    background-color: #171A25;
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5%;
+}
+
+.geo_frame {
+    background-color: #171A25;
+    position: absolute;
+    top: calc(85% + 3px);
+    padding-left: 20px;
+}
+
+.clip {
+    cursor: pointer;
+}
+
+.chat_input {
+    width: 87%;
+    background-color: #06060A;
+    color: #fff;
+    border: 2px solid #000;
+    border-radius: 2%;
+}
+
+.input_file::before {
+    content: 'Select to file';
+    position: absolute;
+    background-color: #06060A;
+    color: #B1B0B0;
+    width: 100%;
+    text-align: center;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.close_file {
+    background: no-repeat center/contain url('../img/close.png');
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.icon_file {
+    background: no-repeat center/contain url('../img/file.png');
+    width: 20px;
+    height: 20px;
+}
+
+.close_mediaRecord {
+    background: no-repeat center/contain url('../img/close.png');
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.video_icon {
+    background: no-repeat center/contain url('../img/video.png');
+    width: 20px;
+    height: 20px; 
+}
+
+.audio_icon {
+    background: no-repeat center/contain url('../img/audio.png');
+    width: 20px;
+    height: 20px; 
+}
+
+.input_file {
+    position: relative;
+}
+
+.sending {
+    cursor: pointer;
+}
+
+.mediaRecord_start {
+    width: 20px;
+    height: 20px;
+    background-color: darkred;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.mediaRecord_stop {
+    width: 20px;
+    height: 20px;
+    background-color: #000000;
+    cursor: pointer;
+}
+
+/*----------------------- Aside_rigth ------------------------------ */
+
+.media {
+    display: none;
+    background-color: #171A25;
+    border: 2px solid #06060A;
+    border-left: none;
+    width: calc(20% - 2px);
+
+}
+
+.media_active {
+    display: block;
+}
+
+.media_header {
+    padding: 5% 3%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.close_media {
+    cursor: pointer;
+}
+
+.media_body_inactive {
+    display: none;
+}
+
+.media_body_item {
+    font-size: 18px;
+    position: relative;
+    cursor: pointer;
+    padding-left: 75px;
+    padding-top: 5px;
+}
+
+.media_body_item:hover {
+    color: #B1B0B0;
+}
+
+.media_body_item::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 20px;
+    top: 5px;
+}
+
+.media_body_videos, .media_body_links, .media_body_images, .media_body_audios, .media_body_files, .media_body_favorites  {
+    display: none;
+}
+
+.media_body_item_active {
+    display: block;
+}

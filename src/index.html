@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Organizer</title>
+</head>
+<body>
+  <section class="chat">
+    <div class="chat_header">
+      <h1>Saved Messages</h1>
+      <img src="img/sidebar.png" alt="sidebar" class="sidebar" style="width: 30px; height: 30px;">
+    </div>
+
+    <div class="chat_body">
+      <div class="dropplace_container">
+        <div class="dropplace">
+        </div>
+      </div>  
+
+        <div class="pin_mesg">
+        <img src="img/pin.png" alt="pin" style="width: 20px; height: 20px;">
+        <div class="pin_content">
+          <div class="pin_content_header">Pinned message</div>
+          <p class="pin_content_body"></p>
+        </div>
+        <img src="img/expand.png" alt="Развернуть" class="expand_pin" style="width: 20px;height: 20px;margin-left: auto;">
+        <img src="img/close.png" alt="Открепить" class="close_pin" style="width: 20px;height: 20px;margin-left: 5px;">
+      </div>
+
+      <div class="messages"></div> 
+    </div>
+
+    <div class="chat_footer">
+      <ul class="clip_body">
+        <li class="clip_body_item clip_audio audio">audio</li>
+        <li class="clip_body_item clip_video video">video</li>
+        <li class="clip_body_item clip_file file">file</li>
+        <li class="clip_body_item clip_geo geo">geo</li>
+      </ul>
+      <img src="img/clip.png" alt="Скрепка" class="clip" style="width: 30px; height: 30px;">
+      <input type="text" class="chat_input" placeholder="Write a message...">
+      <img src="img/sending.png" alt="Отправка" class="sending" style="width: 30px; height: 30px;">
+    </div>
+  </section>
+
+
+  <aside class="media">
+    <div class="media_header">
+      <h2 class="media_title">Shared media</h2>
+      <img src="img/close.png" alt="Назад" class="close_media" style="width: 24px; height: 24px;">
+    </div>
+
+    <ul class="media_body">
+      <li class="media_body_item link" data-item="links"><span>0</span> links</li>
+      <li class="media_body_item image" data-item="images"><span>0</span> photos</li>
+      <li class="media_body_item video" data-item="videos"><span>0</span> videos</li>
+      <li class="media_body_item audio" data-item="audios"><span>0</span> audios</li>
+      <li class="media_body_item file" data-item="files"><span>0</span> documents</li>
+      <li class="media_body_item favorite" data-item="favorites"><span>0</span> favorites</li>
+    </ul>
+    <div class="media_bodies">
+      <div class="media_body_links" data-item="links"></div>
+      <div class="media_body_images" data-item="images"></div>
+      <div class="media_body_videos" data-item="videos"></div>
+      <div class="media_body_audios" data-item="audios"></div>
+      <div class="media_body_files" data-item="files"></div>
+      <div class="media_body_favorites" data-item="favorites"></div>
+    </div>
+  </aside>
+</body>
+</html>
