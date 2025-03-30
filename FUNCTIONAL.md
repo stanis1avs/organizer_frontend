@@ -1,6 +1,9 @@
-## Функционал
+# Внешний вид приложения
+![f](https://github.com/Stanislavsus-prj/organizer_frontend/blob/main/readme_files/start.jpg?raw=true)
+![f](https://github.com/Stanislavsus-prj/organizer_frontend/blob/main/readme_files/sidebar.jpg?raw=true)
+![f](https://github.com/Stanislavsus-prj/organizer_frontend/blob/main/readme_files/sidebar_body.jpg?raw=true)
 
-
+# Функционал приложения
 - Сохранение в истории ссылок и текстовых сообщений
 - Ссылки (то, что начинается с ```http://``` или ```https://```) кликабельны и отображаются как ссылки
 - Сохранение в истории и загрузка изображений, файлов, видео и аудио (как файлов) - через Drag-and-drop и через иконку загрузки
