@@ -1,8 +1,17 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #06060A;
+:root {
+  --color-bg: #101113;
+  --color-panel: #1e1f23;
+  --color-border: #292b2f;
+  --color-text: #f1f1f1;
+  --color-accent: #00D2FF;
+}
+
+body {    
+    font-family: 'Inter', sans-serif;
+    background-color: var(--color-bg);
     margin: 0;
     display: flex;
+    color: var(--color-text);
 }
 
 h1, h2 {
@@ -33,14 +42,23 @@ a {
 /*----------------------- Header ------------------------------ */
 
 .chat_header {
-    background-color: #171A25;
+    background-color: var(--color-panel);
+    padding: 1rem;
     display: flex;
     justify-content: space-between;
-    padding: 1.5%;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.chat_header h1 {
+  font-size: 1.25rem;
 }
 
 .sidebar {
     cursor: pointer;
+    width: 24px;
+    height: 24px;
+    filter: invert(80%);
 }
 
 /*----------------------- Body ------------------------------ */
@@ -51,6 +69,10 @@ a {
     flex-direction: column-reverse;
     justify-content: space-between;
     position: relative;
+    padding: 1rem 0;
+    gap: 0.75rem;
+    ::-webkit-scrollbar { display: none; }
+    scrollbar-width: none
 }
 
 .dropplace_container {
@@ -92,10 +114,13 @@ a {
     position: absolute;
     bottom: 50px;
     z-index: 1;
+    padding: 5px;
 }
 
 .clip_active {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .clip_body_item {
@@ -118,6 +143,13 @@ a {
     top: 5px;
 }
 
+.clip_body_item.clip_geo.geo::before {
+    top: 4px;
+    left: 4px;
+    width: 18px;
+    height: 18px
+}
+
 .audio::before {
     background: no-repeat center/contain url('../img/audio.png');
 }
@@ -132,8 +164,8 @@ a {
 
 .geo::before {
     background: no-repeat center/contain url('../img/geo.png');
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
     position: absolute;
     content: '';
     left: 1px;
@@ -165,10 +197,14 @@ a {
     display: none;
     background-color: #171A25;
     border: 2px solid #06060A;
+    padding: 0.2rem;
+    margin: 0 0.3%;
+    border-radius: 4px;
 }
 
 .pin_content_body {
     height: 40px;
+    padding: 0.1rem;
 }
 
 .pin_mesg_active {
@@ -187,14 +223,19 @@ a {
     cursor: pointer;
 }
 
-.message {
-    display: block;
-    background-color: #171A25;
-    border-radius: 5px;       
+.message {    
     margin: 1.5%;
-    min-width: 100px;
-    max-width: 400px;
-}   
+    background-color: var(--color-panel);
+    border-radius: 10px;
+    max-width: 60%;
+    min-width: 30%;
+    align-self: flex-end;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.message.left {
+  align-self: flex-start;
+}
 
 .message_header {
     display: flex;
@@ -220,8 +261,8 @@ a {
 .message_header_img {
     padding-left: 5px;
     cursor: pointer;
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
 }
 
 .pin {
@@ -242,6 +283,9 @@ a {
 
 .message_body {
     padding: 1% 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
 .message_body p {
@@ -257,8 +301,8 @@ a {
     content: '';
     position: absolute;
     background: no-repeat center/contain url('../img/file.png');
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
     left: 1px;
 }
 
@@ -272,6 +316,10 @@ a {
 .message_media {
     display: block;
     max-width: 100%;
+}
+
+audio {
+    height: 40px;
 }
 
 .message_footer {
@@ -300,10 +348,13 @@ a {
 /*----------------------- Footer ------------------------------ */
 
 .chat_footer {
-    background-color: #171A25;
+    background-color: var(--color-panel);
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    padding: 1.5%;
+    padding: 0.75rem;
+    gap: 1rem;
+    border-top: 1px solid var(--color-border);
 }
 
 .geo_frame {
@@ -318,11 +369,12 @@ a {
 }
 
 .chat_input {
-    width: 87%;
-    background-color: #06060A;
-    color: #fff;
-    border: 2px solid #000;
-    border-radius: 2%;
+    flex: 1;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    color: var(--color-text);
 }
 
 .input_file::before {
@@ -376,6 +428,18 @@ a {
     cursor: pointer;
 }
 
+.sending, .clip {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  filter: invert(80%);
+  transition: transform 0.2s ease;
+}
+
+.sending:hover, .clip:hover {
+  transform: scale(1.1);
+}
+
 .mediaRecord_start {
     width: 20px;
     height: 20px;
@@ -394,11 +458,12 @@ a {
 /*----------------------- Aside_rigth ------------------------------ */
 
 .media {
-    display: none;
-    background-color: #171A25;
-    border: 2px solid #06060A;
-    border-left: none;
-    width: calc(20% - 2px);
+    background-color: var(--color-panel);
+    width: 25%;
+    border: 2px solid #000;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--color-border);
 
 }
 
@@ -416,6 +481,10 @@ a {
     cursor: pointer;
 }
 
+.media_bodies {
+    padding: 8px;
+}
+
 .media_body_inactive {
     display: none;
 }
@@ -424,8 +493,8 @@ a {
     font-size: 18px;
     position: relative;
     cursor: pointer;
-    padding-left: 75px;
-    padding-top: 5px;
+    padding-left: 55px;
+    padding-top: 10px;
 }
 
 .media_body_item:hover {
@@ -438,7 +507,7 @@ a {
     width: 18px;
     height: 18px;
     left: 20px;
-    top: 5px;
+    top: 10px;
 }
 
 .media_body_videos, .media_body_links, .media_body_images, .media_body_audios, .media_body_files, .media_body_favorites  {
