@@ -2,10 +2,10 @@ export default class Request {
   constructor(server) {
     // Смена протокола сервера
     this.server = server;
-    this.wsServer = this.server.replace(/^http/i, 'ws');
+    this.wsServer = this.server.replace(/^http/i, "ws");
 
     // Первичное создание объектов
-    this.data = { event: 'load' };
+    this.data = { event: "load" };
     this.callbacks = {};
 
     // Привязываем контекст
@@ -17,12 +17,12 @@ export default class Request {
     this.ws = new WebSocket(this.wsServer);
 
     // При соединении запрашиваем первичные данные
-    this.ws.addEventListener('open', this.onOpen);
+    this.ws.addEventListener("open", this.onOpen);
 
-    this.ws.addEventListener('message', this.onMessage);
+    this.ws.addEventListener("message", this.onMessage);
 
-    this.ws.addEventListener('error', this.callbacks.error);
-    this.ws.addEventListener('close', this.callbacks.error);
+    this.ws.addEventListener("error", this.callbacks.error);
+    this.ws.addEventListener("close", this.callbacks.error);
   }
 
   // Открытие соединения
@@ -34,32 +34,38 @@ export default class Request {
   onMessage(event) {
     const data = JSON.parse(event.data);
     // Ответ с базой сообщений
-    if (data.event === 'load') {
-      this.callbacks.load(data.dB, data.favorites, data.position);
+    if (data.event === "load") {
+      this.callbacks.load(data.dB, data.favorites, data.position, data.pinned);
     }
     // Успешная отправка текстового сообщения
-    if (data.event === 'showMessage') {
+    if (data.event === "showMessage") {
       this.callbacks.showMessage(data.id, data.message, data.date, data.geo);
     }
     // Успешная отправка файла
-    if (data.event === 'showFile') {
-      this.callbacks.showMessage(data.id, data.message, data.date, data.geo, data.type);
+    if (data.event === "showFile") {
+      this.callbacks.showMessage(
+        data.id,
+        data.message,
+        data.date,
+        data.geo,
+        data.type
+      );
     }
 
     // Успешное удаление сообщения
-    if (data.event === 'deleteMessage') {
+    if (data.event === "deleteMessage") {
       this.callbacks.deleteMessage(data.id);
     }
     // Успешное добавление в избранное сообщения
-    if (data.event === 'favoriteAppend') {
+    if (data.event === "favoriteAppend") {
       this.callbacks.favoriteAppend(data.id);
     }
     // Успешное удаление сообщения из избранного
-    if (data.event === 'favoriteDelete') {
+    if (data.event === "favoriteDelete") {
       this.callbacks.favoriteDelete(data.id);
     }
     // Успешное добавление сообщения в закрепленное
-    if (data.event === 'appendPin') {
+    if (data.event === "appendPin") {
       this.callbacks.pinAppend(data.id);
     }
   }
@@ -68,15 +74,15 @@ export default class Request {
   send(event, message) {
     if (this.ws.readyState === 1) {
       this.data = { event, message };
-      if (message.type === 'text' || message.type == null) {
+      if (message.type === "text" || message.type == null) {
         this.ws.send(JSON.stringify(this.data));
       } else {
         const formData = new FormData();
-        formData.append('date', message.date);
-        formData.append('body', message.body);
-        formData.append('type', message.type);
-        formData.append('name', message.name);
-        formData.append('geo', message.geo);
+        formData.append("date", message.date);
+        formData.append("file", message.body);
+        formData.append("type", message.type);
+        formData.append("name", message.name);
+        formData.append("geo", message.geo);
         this.sendFile(formData);
       }
     } else {
@@ -87,8 +93,8 @@ export default class Request {
   // Отправка файла
   sendFile(formData) {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `${this.server}upload`);
-    xhr.addEventListener('error', () => this.callbacks.error());
+    xhr.open("POST", `${this.server}upload`);
+    xhr.addEventListener("error", () => this.callbacks.error());
     xhr.send(formData);
   }
 }

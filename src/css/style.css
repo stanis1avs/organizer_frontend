@@ -3,51 +3,61 @@
   --color-panel: #1e1f23;
   --color-border: #292b2f;
   --color-text: #f1f1f1;
-  --color-accent: #00D2FF;
+  --color-accent: #00d2ff;
 }
 
-body {    
-    font-family: 'Inter', sans-serif;
-    background-color: var(--color-bg);
-    margin: 0;
-    display: flex;
-    color: var(--color-text);
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--color-bg);
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  color: var(--color-text);
 }
 
-h1, h2 {
-    margin: 0;
-    color: #B1B0B0;
+.body_with_ai_aside {
+  justify-content: start;
+}
+
+.body_with_media_aside {
+  justify-content: end;
+}
+
+h1,
+h2 {
+  margin: 0;
+  color: #b1b0b0;
 }
 
 ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 
 p {
-    margin: 0;
+  margin: 0;
 }
 
 a {
-    color: #0f1278;
+  color: #0f1278;
 }
 
 .chat {
-    width: calc(60% - 4px);
-    margin: 0% 0% 0% 20%;
-    border: 2px solid #000;
+  width: calc(60% - 4px);
+  margin: 0% 0% 0% 0%;
+  border: 2px solid #000;
 }
 
 /*----------------------- Header ------------------------------ */
 
 .chat_header {
-    background-color: var(--color-panel);
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-panel);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .chat_header h1 {
@@ -55,182 +65,194 @@ a {
 }
 
 .sidebar {
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
-    filter: invert(80%);
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  filter: invert(80%);
+}
+
+.asides_wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /*----------------------- Body ------------------------------ */
 
 .chat_body {
-    height: 80vh;
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: space-between;
-    position: relative;
-    padding: 1rem 0;
-    gap: 0.75rem;
-    ::-webkit-scrollbar { display: none; }
-    scrollbar-width: none
+  height: 80vh;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  position: relative;
+  padding: 1rem 0;
+  gap: 0.75rem;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
 }
 
 .dropplace_container {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    background-color: #ffffff;
-    opacity: 0.8;
-    visibility: hidden;
-    z-index: 100;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  opacity: 0.8;
+  visibility: hidden;
+  z-index: 100;
 }
 
 .dropplace {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    margin: 10px;
-    border: 2px dashed #006363;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  margin: 10px;
+  border: 2px dashed #006363;
 }
 
 .dropplace::after {
-    content: 'Put the file here';
-    font-size: 1.2em;
-    font-weight: bold;
+  content: "Put the file here";
+  font-size: 1.2em;
+  font-weight: bold;
 }
 
 .clip_body {
-    display: none;
-    background-color: #171A25;
-    width: 100px;
-    height: 100px;
-    color: write;
-    position: absolute;
-    bottom: 50px;
-    z-index: 1;
-    padding: 5px;
+  display: none;
+  background-color: #171a25;
+  width: 100px;
+  height: 100px;
+  color: write;
+  position: absolute;
+  bottom: 50px;
+  z-index: 1;
+  padding: 5px;
 }
 
 .clip_active {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .clip_body_item {
-    font-size: 18px;
-    position: relative;
-    cursor: pointer;
-    padding-left: 35px;
+  font-size: 18px;
+  position: relative;
+  cursor: pointer;
+  padding-left: 35px;
 }
 
 .clip_body_item:hover {
-    color: #B1B0B0;
+  color: #b1b0b0;
 }
 
 .clip_body_item::before {
-    content: '';
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    left: 5px;
-    top: 5px;
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 5px;
+  top: 5px;
 }
 
 .clip_body_item.clip_geo.geo::before {
-    top: 4px;
-    left: 4px;
-    width: 18px;
-    height: 18px
+  top: 4px;
+  left: 4px;
+  width: 18px;
+  height: 18px;
 }
 
 .audio::before {
-    background: no-repeat center/contain url('../img/audio.png');
+  background: no-repeat center/contain url("../img/audio.png");
 }
 
 .video::before {
-    background: no-repeat center/contain url('../img/video.png');
+  background: no-repeat center/contain url("../img/video.png");
 }
 
 .file::before {
-    background: no-repeat center/contain url('../img/file.png');
+  background: no-repeat center/contain url("../img/file.png");
 }
 
 .geo::before {
-    background: no-repeat center/contain url('../img/geo.png');
-    width: 15px;
-    height: 15px;
-    position: absolute;
-    content: '';
-    left: 1px;
-    top: 1px;
+  background: no-repeat center/contain url("../img/geo.png");
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  content: "";
+  left: 1px;
+  top: 1px;
 }
 
 .link::before {
-    background: no-repeat center/contain url('../img/link.png');
+  background: no-repeat center/contain url("../img/link.png");
 }
 
 .image::before {
-    background: no-repeat center/contain url('../img/image.png');
+  background: no-repeat center/contain url("../img/image.png");
 }
 
 .favorite::before {
-    background: no-repeat center/contain url('../img/favorite.png');
+  background: no-repeat center/contain url("../img/favorite.png");
 }
 /*----------------------- Message ------------------------------ */
 
 .messages {
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-    overflow: auto;
-    overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  overflow: auto;
+  overflow-x: hidden;
 }
 
 .pin_mesg {
-    display: none;
-    background-color: #171A25;
-    border: 2px solid #06060A;
-    padding: 0.2rem;
-    margin: 0 0.3%;
-    border-radius: 4px;
+  display: none;
+  background-color: #171a25;
+  border: 2px solid #06060a;
+  padding: 0.2rem;
+  margin: 0 0.3%;
+  border-radius: 4px;
 }
 
 .pin_content_body {
-    height: 40px;
-    padding: 0.1rem;
+  height: 40px;
+  padding: 0.1rem;
+}
+
+.pin_content_body > .message_media {
+  height: 40px;
 }
 
 .pin_mesg_active {
-    display: flex;
+  display: flex;
 }
 
 .pin_content {
-    padding-left: 10px;
+  padding-left: 10px;
 }
 
 .close_pin {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .expand_pin {
-    cursor: pointer;
+  cursor: pointer;
 }
 
-.message {    
-    margin: 1.5%;
-    background-color: var(--color-panel);
-    border-radius: 10px;
-    max-width: 60%;
-    min-width: 30%;
-    align-self: flex-end;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+.message {
+  margin: 1.5%;
+  background-color: var(--color-panel);
+  border-radius: 10px;
+  max-width: 60%;
+  min-width: 30%;
+  align-self: flex-end;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .message.left {
@@ -238,197 +260,198 @@ a {
 }
 
 .message_header {
-    display: flex;
-    justify-content: flex-end;
-    height: 17px;
-    padding-bottom: 1px;
-    position: relative;
+  display: flex;
+  justify-content: flex-end;
+  height: 17px;
+  padding-bottom: 1px;
+  position: relative;
 }
 
 .tools {
-    display: none;
-    position: absolute;
+  display: none;
+  position: absolute;
 }
 
-.message_header:hover .tools{
-    display: flex;
+.message_header:hover .tools {
+  display: flex;
 }
 
 .message_header:hover {
-    border-bottom: 1px solid #06060A;
+  border-bottom: 1px solid #06060a;
 }
 
 .message_header_img {
-    padding-left: 5px;
-    cursor: pointer;
-    width: 15px;
-    height: 15px;
+  padding-left: 5px;
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
 }
 
 .pin {
-    background: no-repeat center/contain url('../img/pin.png');
+  background: no-repeat center/contain url("../img/pin.png");
 }
 
 .bin {
-    background: no-repeat center/contain url('../img/bin.png');
+  background: no-repeat center/contain url("../img/bin.png");
 }
 
 .favorite_inactive {
-    background: no-repeat center/contain url('../img/favorite.png');
+  background: no-repeat center/contain url("../img/favorite.png");
 }
 
 .favorite_active {
-    background: no-repeat center/contain url('../img/favoriteFill.png');
+  background: no-repeat center/contain url("../img/favoriteFill.png");
 }
 
 .message_body {
-    padding: 1% 5%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  padding: 1% 5%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .message_body p {
-    padding-bottom: 5px;
+  padding-bottom: 5px;
 }
 
 .geo_mesg {
-    position: relative;
-    padding-left: 20px;
+  position: relative;
+  padding-left: 20px;
 }
 
 .message_file::before {
-    content: '';
-    position: absolute;
-    background: no-repeat center/contain url('../img/file.png');
-    width: 15px;
-    height: 15px;
-    left: 1px;
+  content: "";
+  position: absolute;
+  background: no-repeat center/contain url("../img/file.png");
+  width: 15px;
+  height: 15px;
+  left: 1px;
 }
 
 .message_file {
-    display: block;
-    position: relative;
-    padding-left: 25px;
-    padding-right: 10px;
+  display: block;
+  position: relative;
+  padding-left: 25px;
+  padding-right: 10px;
 }
 
 .message_media {
-    display: block;
-    max-width: 100%;
+  display: block;
+  max-width: 100%;
 }
 
 audio {
-    height: 40px;
+  height: 40px;
 }
 
 .message_footer {
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-    height: 17px;
-    font-size: 14px;
-    padding-top: 1px;
-    position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  height: 17px;
+  font-size: 14px;
+  padding-top: 1px;
+  position: relative;
 }
 
 .date {
-    display: none;
-    position: absolute;
+  display: none;
+  position: absolute;
 }
 
 .message_footer:hover .date {
-    display: block;
+  display: block;
 }
 
 .message_footer:hover {
-    border-top: 1px solid #06060A;
+  border-top: 1px solid #06060a;
 }
 
 /*----------------------- Footer ------------------------------ */
 
 .chat_footer {
-    background-color: var(--color-panel);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem;
-    gap: 1rem;
-    border-top: 1px solid var(--color-border);
+  background-color: var(--color-panel);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  gap: 1rem;
+  border-top: 1px solid var(--color-border);
 }
 
 .geo_frame {
-    background-color: #171A25;
-    position: absolute;
-    top: calc(85% + 3px);
-    padding-left: 20px;
+  background-color: #171a25;
+  position: absolute;
+  top: calc(85% + 3px);
+  padding-left: 20px;
 }
 
 .clip {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .chat_input {
-    flex: 1;
-    padding: 0.5rem 1rem;
-    background-color: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    color: var(--color-text);
+  flex: 1;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text);
 }
 
 .input_file::before {
-    content: 'Select to file';
-    position: absolute;
-    background-color: #06060A;
-    color: #B1B0B0;
-    width: 100%;
-    text-align: center;
-    font-size: 20px;
-    cursor: pointer;
+  content: "Select to file";
+  position: absolute;
+  background-color: #06060a;
+  color: #b1b0b0;
+  width: 100%;
+  text-align: center;
+  font-size: 20px;
+  cursor: pointer;
 }
 
 .close_file {
-    background: no-repeat center/contain url('../img/close.png');
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
+  background: no-repeat center/contain url("../img/close.png");
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 }
 
 .icon_file {
-    background: no-repeat center/contain url('../img/file.png');
-    width: 20px;
-    height: 20px;
+  background: no-repeat center/contain url("../img/file.png");
+  width: 20px;
+  height: 20px;
 }
 
 .close_mediaRecord {
-    background: no-repeat center/contain url('../img/close.png');
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
+  background: no-repeat center/contain url("../img/close.png");
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 }
 
 .video_icon {
-    background: no-repeat center/contain url('../img/video.png');
-    width: 20px;
-    height: 20px; 
+  background: no-repeat center/contain url("../img/video.png");
+  width: 20px;
+  height: 20px;
 }
 
 .audio_icon {
-    background: no-repeat center/contain url('../img/audio.png');
-    width: 20px;
-    height: 20px; 
+  background: no-repeat center/contain url("../img/audio.png");
+  width: 20px;
+  height: 20px;
 }
 
 .input_file {
-    position: relative;
+  position: relative;
 }
 
 .sending {
-    cursor: pointer;
+  cursor: pointer;
 }
 
-.sending, .clip {
+.sending,
+.clip {
   width: 24px;
   height: 24px;
   cursor: pointer;
@@ -436,84 +459,328 @@ audio {
   transition: transform 0.2s ease;
 }
 
-.sending:hover, .clip:hover {
+.sending:hover,
+.clip:hover {
   transform: scale(1.1);
 }
 
 .mediaRecord_start {
-    width: 20px;
-    height: 20px;
-    background-color: darkred;
-    border-radius: 50%;
-    cursor: pointer;
+  width: 20px;
+  height: 20px;
+  background-color: darkred;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 .mediaRecord_stop {
-    width: 20px;
-    height: 20px;
-    background-color: #000000;
-    cursor: pointer;
+  width: 20px;
+  height: 20px;
+  background-color: #000000;
+  cursor: pointer;
 }
 
 /*----------------------- Aside_rigth ------------------------------ */
 
 .media {
-    background-color: var(--color-panel);
-    width: 25%;
-    border: 2px solid #000;
-    display: flex;
-    flex-direction: column;
-    border-left: 1px solid var(--color-border);
-
+  background-color: var(--color-panel);
+  width: 25%;
+  border: 2px solid #000;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--color-border);
 }
 
 .media_active {
-    display: block;
+  display: block;
 }
 
 .media_header {
-    padding: 5% 3%;
-    display: flex;
-    justify-content: space-between;
+  padding: 5% 3%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .close_media {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .media_bodies {
-    padding: 8px;
+  padding: 8px;
 }
 
 .media_body_inactive {
-    display: none;
+  display: none;
 }
 
 .media_body_item {
-    font-size: 18px;
-    position: relative;
-    cursor: pointer;
-    padding-left: 55px;
-    padding-top: 10px;
+  font-size: 18px;
+  position: relative;
+  cursor: pointer;
+  padding-left: 55px;
+  padding-top: 10px;
 }
 
 .media_body_item:hover {
-    color: #B1B0B0;
+  color: #b1b0b0;
 }
 
 .media_body_item::before {
-    content: '';
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    left: 20px;
-    top: 10px;
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 20px;
+  top: 10px;
 }
 
-.media_body_videos, .media_body_links, .media_body_images, .media_body_audios, .media_body_files, .media_body_favorites  {
-    display: none;
+.media_body_videos,
+.media_body_links,
+.media_body_images,
+.media_body_audios,
+.media_body_files,
+.media_body_favorites {
+  display: none;
 }
 
 .media_body_item_active {
-    display: block;
+  display: block;
+}
+
+/*----------------------- Aside_left ------------------------------ */
+
+.ai-toggle {
+  --w: 64px; /* ширина переключателя */
+  --h: 28px; /* высота трека */
+  --knob: 24px; /* диаметр ручки */
+  --gap: 4px; /* отступ ручки внутри трека */
+  --bg-off: #2a2b2f; /* трек выключенного состояния (темно-серый) */
+  --bg-on-left: rgba(
+    0,
+    210,
+    255,
+    0.12
+  ); /* левый фон при включении (слегка подсвечен) */
+  --accent: var(--color-accent); /* яркий акцент (синий/циан) */
+  --knob-bg: #ffffff; /* ручка цвет */
+  --label-color: #cfeefc; /* цвет надписи AI (легкий голубой) */
+
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  width: var(--w);
+  height: var(--h);
+  border-radius: calc(var(--h) / 2);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--bg-off);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+  vertical-align: middle;
+}
+
+/* inner track alignment */
+.ai-toggle .ai-track {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* label placed on the left side, hidden by default (visibility handled by .ai-on) */
+.ai-toggle .ai-label {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 600;
+  font-size: 12px;
+  color: transparent;
+  transition: color 0.12s ease, opacity 0.12s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* circular knob */
+.ai-toggle .ai-knob {
+  position: absolute;
+  top: 50%;
+  left: var(--gap);
+  transform: translateY(-50%);
+  width: var(--knob);
+  height: var(--knob);
+  border-radius: 50%;
+  background: var(--knob-bg);
+  box-shadow: 0 2px 6px rgba(2, 6, 23, 0.45);
+  transition: left 0.16s cubic-bezier(0.2, 0.9, 0.25, 1), box-shadow 0.12s ease;
+  will-change: left;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+}
+
+/* Hover/active affordance */
+.ai-toggle:active .ai-knob {
+  box-shadow: 0 1px 4px rgba(2, 6, 23, 0.55);
+}
+
+/* ON state: move knob to right, show AI label (on the left), and tint left side */
+.ai-toggle.ai-on {
+  background: linear-gradient(
+    90deg,
+    var(--bg-on-left) 0 50%,
+    var(--bg-off) 50% 100%
+  );
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  border-color: rgba(0, 0, 0, 0.18);
+}
+.ai-toggle.ai-on .ai-label {
+  color: var(--label-color);
+  opacity: 1;
+}
+.ai-toggle.ai-on .ai-knob {
+  left: calc(100% - var(--knob) - var(--gap));
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.32);
+  border-color: rgba(0, 0, 0, 0.22);
+  background: #ffffff;
+}
+
+/* subtle focus ring */
+.ai-toggle:focus {
+  outline: 2px solid rgba(99, 102, 241, 0.14);
+  outline-offset: 2px;
+}
+
+/* smaller size on narrow screens */
+@media (max-width: 420px) {
+  .ai-toggle {
+    --w: 56px;
+    --h: 24px;
+    --knob: 20px;
+  }
+  .ai-toggle .ai-label {
+    left: 8px;
+    font-size: 11px;
+  }
+  .ai-toggle-on {
+    right: 8px;
+  }
+}
+
+.left-aside {
+  border-radius: 6px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.12s ease, transform 0.12s ease;
+  padding: 0;
+}
+
+.left-aside.left-aside-active {
+  display: block;
+}
+
+.left-toggle:focus {
+  outline: 2px solid rgba(99, 102, 241, 0.22);
+  outline-offset: 2px;
+}
+.left-toggle img {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+.left-toggle[aria-expanded="true"] {
+  background: rgba(99, 102, 241, 0.06);
+}
+
+.pin_mesg {
+  display: none;
+  box-sizing: border-box;
+}
+.pin_mesg.pin_mesg_active {
+  display: flex;
+}
+
+/*----------------------- From js ------------------------------ */
+
+/* wrapper высота в свернутом виде (как было в JS: 40px) */
+.pin_mesg .pin_content_body {
+  height: 40px; /* wrapper height when collapsed */
+  overflow: hidden;
+  transition: height 0.18s ease;
+  box-sizing: border-box;
+}
+
+/* непосредственно содержимое (child) в свернутом виде — 30px (как было в JS) */
+.pin_mesg .pin_content_body > * {
+  height: 30px; /* collapsed child height */
+  overflow: hidden;
+  transition: height 0.18s ease;
+  box-sizing: border-box;
+}
+
+/* expanded state — точно как в старом inline-логике: 110px wrapper / 100px child */
+.pin_mesg.pin-expanded .pin_content_body {
+  height: 110px; /* wrapper height when expanded */
+}
+.pin_mesg.pin-expanded .pin_content_body > * {
+  height: 100px; /* expanded child height */
+}
+
+/* Иконка expand: поворот 0deg / 180deg (как раньше через transform) */
+.pin_mesg .expand_pin {
+  transition: transform 0.18s ease;
+  transform: rotate(0deg);
+  display: inline-block;
+}
+.pin_mesg.pin-expanded .expand_pin {
+  transform: rotate(180deg);
+}
+
+/* Когда закреп активен — переключаем направление chat_body на column (ранее JS ставил inline flexDirection) */
+.chat_body {
+  display: flex;
+  flex-direction: column-reverse; /* default — сообщения снизу вверх (как было) */
+  transition: flex-direction 0.12s ease;
+}
+.chat_body.pin-active {
+  flex-direction: column; /* pinned above messages (как было раньше) */
+}
+
+/* ------------------------
+   Остальные состояния, которые я добавлял раньше
+   ------------------------ */
+
+/* clip body (вложение) */
+.clip_body {
+  display: none;
+}
+.clip_body.clip_active {
+  display: block;
+}
+
+/* media panel */
+.media {
+  display: none;
+}
+.media.media_active {
+  display: block;
+}
+
+.message_header_img {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* favorites icons (пример: можешь заменить background на svg) */
+.favorite_active {
+  background: url("../img/favoriteFill.png") center/contain no-repeat;
+}
+.favorite_inactive {
+  background: url("../img/favorite.png") center/contain no-repeat;
 }
