@@ -1,5 +1,7 @@
 # organizer_frontend
 
+[English version](https://github.com/stanis1avs/organizer_frontend/blob/main/README-en.md) 
+
 Реализован диплом блока [«Продвинутый JavaScript в браузере» от Нетологии](https://github.com/netology-code/ahj-diploma).
 Диплом представляет собой чат органайзер на основе прототипов популярных мессенджеров, таких как Telegram, Whatsapp.
 
@@ -10,36 +12,38 @@
 [gh-pages](https://stanislavsus-prj.github.io/organizer_frontend/) 
 [backend](https://github.com/Stanislavsus-prj/organizer_backend) 
 
-![f](https://github.com/Stanislavsus-prj/organizer_frontend/blob/main/readme_files/start.jpg?raw=true)
-![f](https://github.com/Stanislavsus-prj/organizer_frontend/blob/main/readme_files/sidebar.jpg?raw=true)
-![f](https://github.com/Stanislavsus-prj/organizer_frontend/blob/main/readme_files/sidebar_body.jpg?raw=true)
+[Функционал работы приложения](https://github.com/stanis1avs/organizer_frontend/blob/main/FUNCTIONAL.md)
+[UML диаграммы](https://github.com/stanis1avs/organizer_frontend/blob/main/UML.md)
 
-## Функционал
-Функциональность приложения поделена Нетологией на две категории - обязательная и дополнительная 
+Новые фичи приложения [тут](https://github.com/users/stanis1avs/projects/1)
 
-Обязательные для реализации функции:
-- Сохранение в истории ссылок и текстовых сообщений
-- Ссылки (то, что начинается с ```http://``` или ```https://```) должны быть кликабельны и отображаться как ссылки
-- Сохранение в истории изображений, видео и аудио (как файлов) - через Drag & Drop и через иконку загрузки (скрепка в большинстве мессенджеров)
-![f](https://github.com/Stanislavsus-prj/organizer_frontend/blob/main/readme_files/file.jpg?raw=true)
-- Скачивание файлов (на компьютер пользователя)
-- Ленивая подгрузка: сначала подгружаются последние 10 сообщений, при прокрутке вверх подгружаются следующие 10 и т.д.
+## Технический стэк Frontend
 
-Дополнительные для реализации функции:
-- Синхронизация - если приложение открыто в нескольких окнах (вкладках), то контент должен быть синхронизирован
-- Запись видео и аудио (используя API браузера)
-![f](https://github.com/Stanislavsus-prj/organizer_frontend/blob/main/readme_files/video.jpg?raw=true)
-- Отправка геолокации
-- Воспроизведение видео/аудио (используя API браузера)
-- Добавление сообщения в избранное (тогда должен быть интерфейс для просмотра избранного)
-- Просмотр вложений по категориям, например: аудио, видео, изображения, другие файлы (см. боковую меню Telegram)
+1. Нативный JavaScript
+2. WebSocket
+3. Webpack
+4. Babel
+5. ESLint
+6. Appveyor
+7. MediaRecorder API
+8. _Jest (в разработке)_
+9. _Puppeteer (в разработке)_
+10. _Cache API (в разработке)_
+11. _Web Crypto API (в разработке)_
+12. _Streams API (в разработке)_
+13. _Service Worker API (в разработке)_ 
 
-## Техническое оформление
+## Технический стэк Backend
+1. WS
+2. Koa
+3. _Нативный Node.JS (в разработке)_
+4. _DuckDB (в разработке)_
+5. _Redis (в разработке)_
+6. _BM25 + Dense Vectors (в разработке)_
+7. _Weaviate/Qdrant (в разработке)_
+8. _Chrome Extensions API (в разработке)_
+9. _Background script (в разработке)_
 
-Для фронтенда используется: Webpack, Babel, ESLint и Appveyor для развёртывания.
 
-Для бэкенда используется: WS, Koa, и Heroku для развёртывания.
-
-Клиентская часть  выложена на GitHub Pages
 
 Все данные на сервере хранятся в памяти в виде массивов и контейров
