@@ -6,6 +6,11 @@
   --color-accent: #00d2ff;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
+
 body {
   font-family: "Inter", sans-serif;
   background-color: var(--color-bg);
@@ -677,10 +682,29 @@ audio {
   cursor: pointer;
   transition: background 0.12s ease, transform 0.12s ease;
   padding: 0;
+  overflow: hidden;
+  height: 100vh;
 }
 
 .left-aside.left-aside-active {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 25%;
+}
+
+.ai-controls {
+  width: 100%;
+  box-sizing: border-box;
+}
+ 
+.ai_results {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .left-toggle:focus {
