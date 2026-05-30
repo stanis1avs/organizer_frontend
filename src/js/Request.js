@@ -1,100 +1,126 @@
 export default class Request {
   constructor(server) {
-    // Смена протокола сервера
     this.server = server;
     this.wsServer = this.server.replace(/^http/i, "ws");
 
-    // Первичное создание объектов
-    this.data = { event: "load" };
+    // Первичный запрос при открытии соединения
+    this.initialData = { event: "load" };
     this.callbacks = {};
 
-    // Привязываем контекст
+    // BUG-19 fix: параметры переподключения
+    this._reconnectAttempts = 0;
+    this._reconnectTimer = null;
+    this._destroyed = false;   // флаг намеренного закрытия (не переподключаемся)
+
     this.onOpen = this.onOpen.bind(this);
     this.onMessage = this.onMessage.bind(this);
+    this.onClose = this.onClose.bind(this);
+    this.onError = this.onError.bind(this);
   }
 
   init() {
+    this._destroyed = false;
+    this._connect();
+  }
+
+  _connect() {
     this.ws = new WebSocket(this.wsServer);
-
-    // При соединении запрашиваем первичные данные
     this.ws.addEventListener("open", this.onOpen);
-
     this.ws.addEventListener("message", this.onMessage);
-
-    this.ws.addEventListener("error", this.callbacks.error);
-    this.ws.addEventListener("close", this.callbacks.error);
+    this.ws.addEventListener("close", this.onClose);
+    this.ws.addEventListener("error", this.onError);
   }
 
-  // Открытие соединения
+  _scheduleReconnect() {
+    if (this._destroyed) return;
+    clearTimeout(this._reconnectTimer);
+    const delay = Math.min(1000 * 2 ** this._reconnectAttempts, 30_000);
+    console.log(`[WS] Reconnecting in ${delay}ms (attempt ${this._reconnectAttempts + 1})`);
+    this._reconnectTimer = setTimeout(() => {
+      this._reconnectAttempts += 1;
+      this._connect();
+    }, delay);
+  }
+
+  destroy() {
+    this._destroyed = true;
+    clearTimeout(this._reconnectTimer);
+    if (this.ws) this.ws.close();
+  }
+
   onOpen() {
-    this.ws.send(JSON.stringify(this.data));
+    this._reconnectAttempts = 0;  // сброс счётчика при успешном подключении
+    this.ws.send(JSON.stringify(this.initialData));
+    this.callbacks.onConnect?.();
   }
 
-  // Получение сообщения
+  onClose() {
+    console.warn("[WS] Connection closed");
+    this.callbacks.onDisconnect?.();
+    this._scheduleReconnect();
+  }
+
+  onError(event) {
+    // Логируем ошибку, но НЕ бросаем исключение — это убивало приложение (BUG-19)
+    console.error("[WS] Connection error", event);
+    // Браузер сам вызовет onClose после onError — reconnect запустится там
+  }
+
   onMessage(event) {
-    const data = JSON.parse(event.data);
-    // Ответ с базой сообщений
-    if (data.event === "load") {
-      this.callbacks.load(data.dB, data.favorites, data.position, data.pinned);
-    }
-    // Успешная отправка текстового сообщения
-    if (data.event === "showMessage") {
-      this.callbacks.showMessage(data.id, data.message, data.date, data.geo);
-    }
-    // Успешная отправка файла
-    if (data.event === "showFile") {
-      this.callbacks.showMessage(
-        data.id,
-        data.message,
-        data.date,
-        data.geo,
-        data.type
-      );
+    let data;
+    try {
+      data = JSON.parse(event.data);
+    } catch (e) {
+      console.error("[WS] Failed to parse message:", e.message);
+      return;
     }
 
-    // Успешное удаление сообщения
+    if (data.event === "load") {
+      this.callbacks.load?.(data.dB, data.favorites, data.position, data.pinned);
+    }
+    if (data.event === "showMessage") {
+      this.callbacks.showMessage?.(data.id, data.message, data.date, data.geo);
+    }
+    if (data.event === "showFile") {
+      this.callbacks.showMessage?.(data.id, data.message, data.date, data.geo, data.type);
+    }
     if (data.event === "deleteMessage") {
-      this.callbacks.deleteMessage(data.id);
+      this.callbacks.deleteMessage?.(data.id);
     }
-    // Успешное добавление в избранное сообщения
     if (data.event === "favoriteAppend") {
-      this.callbacks.favoriteAppend(data.id);
+      this.callbacks.favoriteAppend?.(data.id);
     }
-    // Успешное удаление сообщения из избранного
     if (data.event === "favoriteDelete") {
-      this.callbacks.favoriteDelete(data.id);
+      this.callbacks.favoriteDelete?.(data.id);
     }
-    // Успешное добавление сообщения в закрепленное
     if (data.event === "appendPin") {
-      this.callbacks.pinAppend(data.id);
+      this.callbacks.pinAppend?.(data.id);
     }
   }
 
-  // Отправка сообщения
   send(event, message) {
-    if (this.ws.readyState === 1) {
-      this.data = { event, message };
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       if (message.type === "text" || message.type == null) {
-        this.ws.send(JSON.stringify(this.data));
+        this.ws.send(JSON.stringify({ event, message }));
       } else {
         const formData = new FormData();
         formData.append("date", message.date);
         formData.append("file", message.body);
         formData.append("type", message.type);
         formData.append("name", message.name);
-        formData.append("geo", message.geo);
+        formData.append("geo", message.geo ?? "");
         this.sendFile(formData);
       }
     } else {
-      this.callbacks.error();
+      console.warn("[WS] Cannot send — connection not open (readyState:", this.ws?.readyState, ")");
     }
   }
 
-  // Отправка файла
   sendFile(formData) {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `${this.server}upload`);
-    xhr.addEventListener("error", () => this.callbacks.error());
+    xhr.addEventListener("error", () => console.error("[XHR] File upload error"));
+    // Уведомляем об успехе — сервер пришлёт showFile через WS
     xhr.send(formData);
   }
 }

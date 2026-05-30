@@ -37,19 +37,32 @@ export default class FileLoader {
   }
 
   getFile() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.init();
+
+      // Если пользователь кликает по кнопке закрытия — отклоняем промис
+      const closeBtn = this.chat_footer.querySelector('.close_file');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          reject(new Error('File selection cancelled'));
+        }, { once: true });
+      }
+
       this.dropplace.addEventListener('drop', (event) => {
-        this.dragoverHidden();
+        this.dragoverHide();
         this.backfromFileInterface();
         resolve(event.dataTransfer.files[0]);
-      });
+      }, { once: true });
 
       this.input_file.addEventListener('change', (e) => {
         e.preventDefault();
         this.backfromFileInterface();
-        resolve(this.input_file.files[0]);
-      });
+        if (this.input_file.files[0]) {
+          resolve(this.input_file.files[0]);
+        } else {
+          reject(new Error('File selection cancelled'));
+        }
+      }, { once: true });
     });
   }
 
@@ -59,7 +72,11 @@ export default class FileLoader {
   }
 
   dragoverHidden(event) {
-    event.preventDefault();
+    if (event) event.preventDefault();
+    this.dropplace.style.visibility = 'hidden';
+  }
+
+  dragoverHide() {
     this.dropplace.style.visibility = 'hidden';
   }
 

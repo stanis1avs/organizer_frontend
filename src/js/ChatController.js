@@ -49,7 +49,7 @@ export default class ChatController {
 
   sendMessagePayload(payload) {
     const info = Object.assign({}, payload);
-    info.date = info.date || this.formatDate(this.currentDate);
+    info.date = info.date || this.formatDate(new Date());
     info.geo = info.geo || "";
     this.sendShowMessage(info);
   }

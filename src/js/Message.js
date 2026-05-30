@@ -50,23 +50,32 @@ export default class Messages {
         break;
       default: {
         const text = document.createElement("p");
-        const chat = this.name.split(" ");
-        chat.reduce((prev, current) => {
-          if (/http[^ ]/.test(current)) {
+        const words = this.name.split(" ");
+        for (const word of words) {
+          if (/^https?:\/\/[^ ]+/.test(word)) {
+            let href;
+            try {
+              href = new URL(word).href;
+            } catch {
+              // Невалидный URL — рендерим как обычный текст
+              text.appendChild(document.createTextNode(` ${word}`));
+              continue;
+            }
             const link = document.createElement("a");
-            link.href = new URL(current).href;
+            link.href = href;
             link.setAttribute("target", "_blank");
+            link.setAttribute("rel", "noopener noreferrer");
             link.style.display = "block";
-            link.innerHTML = current;
+            link.textContent = word;
             link.dataset.id = this.id;
-            text.innerHTML += ` ${link.outerHTML}`;
-            this.media_bodies
-              .querySelector('[data-item="links"]')
-              .append(link.cloneNode(true));
+            text.appendChild(link);
+
+            const linksPanel = this.media_bodies?.querySelector('[data-item="links"]');
+            if (linksPanel) linksPanel.append(link.cloneNode(true));
           } else {
-            text.innerHTML += ` ${current}`;
+            text.appendChild(document.createTextNode(` ${word}`));
           }
-        }, "");
+        }
         this.message_body.append(text);
       }
     }
@@ -100,7 +109,7 @@ export default class Messages {
     const image = document.createElement("img");
     image.classList.add("message_media");
     image.src = `${this.server}${this.name}`;
-    image.innerHTML = this.name;
+    image.alt = this.name;
     this.message_body.append(image);
     this.message_body.dataset.id = this.id;
     this.media_bodies
@@ -112,7 +121,7 @@ export default class Messages {
     const file = document.createElement("a");
     file.classList.add("message_file");
     file.href = `${this.server}${this.name}`;
-    file.innerHTML = this.name;
+    file.textContent = this.name;
     this.message_body.append(file);
     this.message_body.dataset.id = this.id;
     this.media_bodies
@@ -123,7 +132,7 @@ export default class Messages {
   messageFooter() {
     const date = document.createElement("span");
     date.classList.add("date");
-    date.innerHTML = this.date;
+    date.textContent = this.date;
     this.message_footer.append(date);
   }
 }

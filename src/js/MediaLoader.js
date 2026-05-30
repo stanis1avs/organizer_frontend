@@ -30,32 +30,40 @@ export default class MediaLoader {
   record(typeMedia) {
     return new Promise((resolve, reject) => {
       const navigatorDevices = { audio: true };
-      this.blobType = 'audio/mpeg';
+
       if (typeMedia === 'video') {
         navigatorDevices.video = true;
-        this.blobType = 'video/mp4';
-      }
-      if (navigator.mediaDevices) {
-        navigator.mediaDevices.getUserMedia(navigatorDevices).catch(
-          () => reject(new Error('Вы не предоставили доступ к запрашиваемым устройствам')),
-        ).then(
-          (stream) => {
-            this.stream = stream;
-            this.recorder = new MediaRecorder(this.stream);
-            this.typeMedia = typeMedia;
-            this.mediaInterface();
-            this.chunks = [];
-            this.recorder.addEventListener('dataavailable', (evt) => {
-              this.chunks.push(evt.data);
-            });
-            this.recorder.addEventListener('stop', () => {
-              resolve(new Blob(this.chunks, { type: this.blobType }));
-            });
-          },
-        );
+        this.blobType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+          ? 'video/webm;codecs=vp9'
+          : MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : 'video/mp4';
       } else {
-        reject(new Error('Ваш браузер не записывает аудио'));
+        this.blobType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+          ? 'audio/webm;codecs=opus'
+          : MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/ogg';
       }
+
+      if (!navigator.mediaDevices) {
+        reject(new Error('Ваш браузер не поддерживает запись медиа'));
+        return;
+      }
+
+      navigator.mediaDevices.getUserMedia(navigatorDevices)
+        .then((stream) => {
+          this.stream = stream;
+          this.recorder = new MediaRecorder(this.stream, { mimeType: this.blobType });
+          this.typeMedia = typeMedia;
+          this.mediaInterface();
+          this.chunks = [];
+          this.recorder.addEventListener('dataavailable', (evt) => {
+            this.chunks.push(evt.data);
+          });
+          this.recorder.addEventListener('stop', () => {
+            resolve(new Blob(this.chunks, { type: this.blobType }));
+          });
+        })
+        .catch(() => {
+          reject(new Error('Вы не предоставили доступ к запрашиваемым устройствам'));
+        });
     });
   }
 
