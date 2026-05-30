@@ -4,7 +4,7 @@ import Geo from "./Geo";
 import Request from "./Request";
 import { removeFromFavoritesList, appendToFavorites } from "./favorites.js";
 import { removeFromMediaBodies, updateMediaCounts, deltaMediaCount } from "./media.js";
-import { get, findIn } from "./utils/dom.js";
+import { findIn } from "./utils/dom.js";
 
 export default class ChatController {
   constructor({ server, nodes = {}, callbacks = {} } = {}) {
@@ -38,9 +38,9 @@ export default class ChatController {
 
   formatDate(d = new Date()) {
     const pad = (v) => (String(v).length === 1 ? `0${v}` : `${v}`);
-    return `${pad(d.getDate())}:${pad(
+    return `${pad(d.getDate())}.${pad(
       d.getMonth() + 1
-    )}:${d.getFullYear()}, ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    )}.${d.getFullYear()}, ${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
   sendShowMessage(info) {

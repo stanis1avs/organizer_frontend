@@ -10,7 +10,6 @@ import {
   off,
   createEl,
   throttle,
-  removeIf,
   appendIfNotExists,
 } from "./utils/dom.js";
 import { removeFromFavoritesList as rmFav } from "./favorites.js";
@@ -117,10 +116,10 @@ export default class ChatUI {
     this.aiClipBtn = null;
     this.aiResultsRoot = null;
 
-    // bound handlers
+    // bound handlers (используются и при навешивании, и при снятии в dispose)
     this._aiBound = {
-      onClick: this.handleAIToggleClick?.bind(this),
-      onKey: this.handleAIToggleKey?.bind(this),
+      onClick: this.handleAIToggleClick.bind(this),
+      onKey:   this.handleAIToggleKey.bind(this),
     };
 
     // Контроллер
@@ -234,17 +233,14 @@ export default class ChatUI {
     on(this.closePin, "click", () => this.closePinMessage());
 
     if (this.aiToggle) {
-      // initialize ui from controller state if present
       const initial = Boolean(this.controller && this.controller.aiEnabled);
       this.setAIModeUI(initial);
-
-      // click toggles AI mode
-      on(this.aiToggle, "click", (e) => this.handleAIToggleClick(e));
-      // keyboard accessibility
-      on(this.aiToggle, "keydown", (e) => this.handleAIToggleKey(e));
+      on(this.aiToggle, "click",   this._aiBound.onClick);
+      on(this.aiToggle, "keydown", this._aiBound.onKey);
     }
 
     if (this.chatInput) {
+      this.chatInput.maxLength = 4000;
       this.chatInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
@@ -253,14 +249,25 @@ export default class ChatUI {
       });
     }
 
+    // WS connection indicator
+    this._wsIndicator = this.root.querySelector(".ws-status") || null;
+    if (this.controller.request) {
+      this.controller.request.callbacks.onConnect    = () => this._setWsStatus("connected");
+      this.controller.request.callbacks.onDisconnect = () => this._setWsStatus("reconnecting");
+    }
+
     this.setupAIControls();
 
     this.attachMutationObserver();
   }
 
   dispose() {
-    off(this.messages, "scroll", this._bound.lazyLoad);
-    off(this.mediaBody, "click", this._bound.handleMediaBodyClick);
+    off(this.messages,  "scroll", this._bound.lazyLoad);
+    off(this.mediaBody, "click",  this._bound.handleMediaBodyClick);
+    if (this.aiToggle) {
+      off(this.aiToggle, "click",   this._aiBound.onClick);
+      off(this.aiToggle, "keydown", this._aiBound.onKey);
+    }
     this.disconnectMutationObserver();
   }
 
@@ -309,7 +316,7 @@ export default class ChatUI {
     loader
       .record(typeMedia)
       .then((blob) => this.send(blob))
-      .catch((err) => alert(err));
+      .catch((err) => this._showToast(err?.message ?? String(err)));
   }
 
   attach() {
@@ -433,9 +440,9 @@ export default class ChatUI {
       .getGeo()
       .then((elem) => {
         this.chatFooter && this.chatFooter.append(elem);
-        this.coordinates = elem.innerText || "";
+        this.coordinates = elem.textContent || "";
       })
-      .catch((err) => alert(err));
+      .catch((err) => this._showToast(err?.message ?? String(err), "warn"));
   }
 
   handleMediaBodyClick(e) {
@@ -469,12 +476,13 @@ export default class ChatUI {
     // update UI immediately
     this.setAIModeUI(newState);
 
-    // toggle left-aside panel visibility if present
     if (this.aiViewAnswers) {
       if (newState) {
         this.aiViewAnswers.classList.add("left-aside-active");
+        this.aiViewAnswers.setAttribute("aria-hidden", "false");
       } else {
         this.aiViewAnswers.classList.remove("left-aside-active");
+        this.aiViewAnswers.setAttribute("aria-hidden", "true");
       }
     }
   }
@@ -650,42 +658,39 @@ export default class ChatUI {
 
   renderAIResults(data) {
     if (!this.aiResultsRoot) return;
-    this.aiResultsRoot.innerHTML = ""; // clear
+    this.aiResultsRoot.innerHTML = "";
 
-    // If backend returns array of results -> iterate
-    if (Array.isArray(data)) {
-      for (const item of data) {
-        const block = createEl("div", ["ai-result-item"]);
-        block.style.padding = "8px 0";
-        block.style.borderBottom = "1px solid rgba(255,255,255,0.03)";
-        // try to render smartly if object has 'text' or 'snippet' fields
-        if (item && typeof item === "object") {
-          const title = item.title || item.source || item.id || "";
-          if (title) {
-            const h = createEl("div", ["ai-result-title"]);
-            h.textContent = String(title);
-            h.style.fontWeight = "600";
-            h.style.marginBottom = "6px";
-            block.appendChild(h);
-          }
-          const text =
-            item.text || item.snippet || item.content || JSON.stringify(item);
-          const p = createEl("div", ["ai-result-text"]);
-          p.textContent = String(text);
-          block.appendChild(p);
-        } else {
-          block.textContent = String(item);
-        }
-        this.aiResultsRoot.appendChild(block);
-      }
+    // Бэкенд возвращает { results: [...] } — разворачиваем
+    const items = Array.isArray(data) ? data : (data?.results ?? []);
+
+    if (items.length === 0) {
+      const empty = createEl("div", ["ai-result-empty"]);
+      empty.textContent = "No results found.";
+      this.aiResultsRoot.appendChild(empty);
       return;
     }
 
-    // fallback: show raw JSON
-    const pre = createEl("pre", []);
-    pre.textContent = JSON.stringify(data, null, 2);
-    pre.style.whiteSpace = "pre-wrap";
-    this.aiResultsRoot.appendChild(pre);
+    for (const item of items) {
+      const block = createEl("div", ["ai-result-item"]);
+      if (item && typeof item === "object") {
+        const title = item.message || item.title || item.id || "";
+        if (title) {
+          const h = createEl("div", ["ai-result-title"]);
+          h.textContent = String(title);
+          block.appendChild(h);
+        }
+        const score = item.combinedScore != null
+          ? createEl("div", ["ai-result-score"])
+          : null;
+        if (score) {
+          score.textContent = `Score: ${Number(item.combinedScore).toFixed(3)}`;
+          block.appendChild(score);
+        }
+      } else {
+        block.textContent = String(item);
+      }
+      this.aiResultsRoot.appendChild(block);
+    }
   }
 
   renderAIError(err) {
@@ -702,12 +707,27 @@ export default class ChatUI {
   appendAISelectedFile(file) {
     if (!this.aiResultsRoot) return;
     const node = createEl("div", ["ai-selected-file"]);
-    node.textContent = `Selected: ${file.name} (${Math.round(
-      file.size / 1024
-    )} KB)`;
-    node.style.fontSize = "13px";
-    node.style.opacity = "0.95";
+    node.textContent = `Selected: ${file.name} (${Math.round(file.size / 1024)} KB)`;
     this.aiResultsRoot.prepend(node);
-    // we do NOT send file content to /search endpoint — only show it
+  }
+
+  // Показывает неблокирующее уведомление вместо alert()
+  _showToast(message, type = "error") {
+    let container = document.querySelector(".toast-container");
+    if (!container) {
+      container = createEl("div", ["toast-container"]);
+      document.body.appendChild(container);
+    }
+    const toast = createEl("div", ["toast", `toast-${type}`]);
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+  }
+
+  // Обновляет индикатор WS-соединения в шапке
+  _setWsStatus(state) {
+    if (!this._wsIndicator) return;
+    this._wsIndicator.className = `ws-status ws-${state}`;
+    this._wsIndicator.title = { connected: "Connected", reconnecting: "Reconnecting…", disconnected: "Disconnected" }[state] ?? state;
   }
 }

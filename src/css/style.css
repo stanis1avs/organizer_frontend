@@ -133,7 +133,7 @@ a {
   background-color: #171a25;
   width: 100px;
   height: 100px;
-  color: write;
+  color: white;
   position: absolute;
   bottom: 50px;
   z-index: 1;
@@ -768,7 +768,6 @@ audio {
 .chat_body {
   display: flex;
   flex-direction: column-reverse; /* default — сообщения снизу вверх (как было) */
-  transition: flex-direction 0.12s ease;
 }
 .chat_body.pin-active {
   flex-direction: column; /* pinned above messages (как было раньше) */
@@ -807,4 +806,110 @@ audio {
 }
 .favorite_inactive {
   background: url("../img/favorite.png") center/contain no-repeat;
+}
+
+/*----------------------- WS connection indicator ------------------------------ */
+
+.ws-status {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #6b7280; /* серый — ожидание */
+  flex-shrink: 0;
+  transition: background-color 0.3s ease;
+  title: "Connection status";
+}
+.ws-status.ws-connected    { background-color: #22c55e; } /* зелёный */
+.ws-status.ws-reconnecting { background-color: #f59e0b; } /* жёлтый */
+.ws-status.ws-disconnected { background-color: #ef4444; } /* красный */
+
+/*----------------------- Toast уведомления ------------------------------ */
+
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.toast {
+  background: #1e1f23;
+  border: 1px solid #292b2f;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  color: #f1f1f1;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  pointer-events: auto;
+  animation: toast-in 0.2s ease;
+  max-width: 360px;
+  word-break: break-word;
+}
+
+.toast.toast-error  { border-left: 3px solid #ef4444; }
+.toast.toast-warn   { border-left: 3px solid #f59e0b; }
+.toast.toast-info   { border-left: 3px solid #22c55e; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/*----------------------- Адаптивная вёрстка (мобильные) ------------------------------ */
+
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  .chat {
+    width: 100%;
+    border-left: none;
+    border-right: none;
+  }
+
+  .chat_body {
+    height: 70vh;
+  }
+
+  /* правая панель медиа — слайд поверх */
+  .media {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 85% !important;
+    max-width: 360px;
+    z-index: 300;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    display: flex !important;
+  }
+  .media.media_active {
+    transform: translateX(0);
+  }
+
+  /* левая AI-панель — слайд поверх */
+  .left-aside.left-aside-active {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 85% !important;
+    max-width: 360px;
+    z-index: 300;
+  }
+
+  /* сообщения шире на маленьком экране */
+  .message {
+    max-width: 90%;
+    min-width: 50%;
+  }
 }
