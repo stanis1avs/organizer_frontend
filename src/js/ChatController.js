@@ -3,7 +3,7 @@ import Message from "./Message";
 import Geo from "./Geo";
 import Request from "./Request";
 import { removeFromFavoritesList, appendToFavorites } from "./favorites.js";
-import { removeFromMediaBodies, updateMediaCounts } from "./media.js";
+import { removeFromMediaBodies, updateMediaCounts, deltaMediaCount } from "./media.js";
 import { get, findIn } from "./utils/dom.js";
 
 export default class ChatController {
@@ -71,11 +71,7 @@ export default class ChatController {
     this.nodes.messages && this.nodes.messages.append(msg);
     this.scrollBottom(this.nodes.messages?.lastChild);
     if (flag) return this.nodes.messages?.lastChild;
-    updateMediaCounts(
-      this.nodes.messages,
-      this.nodes.mediaBody,
-      this.nodes.mediaBodyFavorites
-    );
+    deltaMediaCount(this.nodes.mediaBody, this.nodes.mediaBodyFavorites, type, 1, msg);
   }
 
   pinAppend(id) {
@@ -96,14 +92,12 @@ export default class ChatController {
   deleteMessage(id) {
     if (!this.nodes.messages) return;
     const node = findIn(this.nodes.messages, `[data-id="${id}"]`);
-    if (node) node.remove();
-
+    if (node) {
+      const type = node.dataset.type;
+      node.remove();
+      deltaMediaCount(this.nodes.mediaBody, this.nodes.mediaBodyFavorites, type, -1, node);
+    }
     removeFromMediaBodies(this.nodes.mediaBodies, id);
-    updateMediaCounts(
-      this.nodes.messages,
-      this.nodes.mediaBody,
-      this.nodes.mediaBodyFavorites
-    );
   }
 
   favoriteAppend(id) {
@@ -121,6 +115,7 @@ export default class ChatController {
   }
 
   renderMessages(data = [], favorites = [], position = 0, pinnedId = null) {
+    this._lazyLoading = false;
     const initialLoadFlag = true;
     for (const message of data) {
       const messageElement = this.showMessage(
@@ -212,10 +207,12 @@ export default class ChatController {
 
   lazyLoad() {
     if (!this.databasePosition || this.databasePosition <= 0) return;
+    if (this._lazyLoading) return;
     if (
       this.upperMessageElement &&
       this.upperMessageElement.getBoundingClientRect().bottom > 0
     ) {
+      this._lazyLoading = true;
       this.upperMessageElement = null;
       this.request &&
         this.request.send &&

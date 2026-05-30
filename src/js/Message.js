@@ -88,9 +88,9 @@ export default class Messages {
     audio.src = `${this.server}${this.name}`;
     this.message_body.append(audio);
     this.message_body.dataset.id = this.id;
-    this.media_bodies
-      .querySelector('[data-item="audios"]')
-      .append(this.message_body.cloneNode(true));
+    const clone = this.message_body.cloneNode(true);
+    clone.querySelector("audio")?.setAttribute("preload", "none");
+    this.media_bodies?.querySelector('[data-item="audios"]')?.append(clone);
   }
 
   messageBodyVideo() {
@@ -100,9 +100,9 @@ export default class Messages {
     video.src = `${this.server}${this.name}`;
     this.message_body.append(video);
     this.message_body.dataset.id = this.id;
-    this.media_bodies
-      .querySelector('[data-item="videos"]')
-      .append(this.message_body.cloneNode(true));
+    const clone = this.message_body.cloneNode(true);
+    clone.querySelector("video")?.setAttribute("preload", "none");
+    this.media_bodies?.querySelector('[data-item="videos"]')?.append(clone);
   }
 
   messageBodyImage() {
@@ -112,9 +112,9 @@ export default class Messages {
     image.alt = this.name;
     this.message_body.append(image);
     this.message_body.dataset.id = this.id;
-    this.media_bodies
-      .querySelector('[data-item="images"]')
-      .append(this.message_body.cloneNode(true));
+    const clone = this.message_body.cloneNode(true);
+    clone.querySelector("img")?.setAttribute("loading", "lazy");
+    this.media_bodies?.querySelector('[data-item="images"]')?.append(clone);
   }
 
   messageBodyFile() {

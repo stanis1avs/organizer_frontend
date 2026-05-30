@@ -14,7 +14,7 @@ import {
   appendIfNotExists,
 } from "./utils/dom.js";
 import { removeFromFavoritesList as rmFav } from "./favorites.js";
-import { updateMediaCounts } from "./media.js";
+import { deltaMediaCount } from "./media.js";
 
 const THROTTLE_MS = 250;
 
@@ -386,11 +386,7 @@ export default class ChatUI {
         attachInactive(inactiveEl);
         rmFav(this.mediaBodyFavorites, id);
         if (send) this.controller.request.send("favoriteDelete", id);
-        updateMediaCounts(
-          this.messages,
-          this.mediaBody,
-          this.mediaBodyFavorites
-        );
+        deltaMediaCount(this.mediaBody, this.mediaBodyFavorites, "favorites", -1);
       });
     };
 
@@ -413,7 +409,7 @@ export default class ChatUI {
       );
 
       if (send) this.controller.request.send("favoriteAppend", id);
-      updateMediaCounts(this.messages, this.mediaBody, this.mediaBodyFavorites);
+      deltaMediaCount(this.mediaBody, this.mediaBodyFavorites, "favorites", 1);
     } else {
       if (existingActive) {
         const inactiveEl = this.createFavoriteNode(false);
@@ -422,7 +418,7 @@ export default class ChatUI {
       }
       rmFav(this.mediaBodyFavorites, id);
       if (send) this.controller.request.send("favoriteDelete", id);
-      updateMediaCounts(this.messages, this.mediaBody, this.mediaBodyFavorites);
+      deltaMediaCount(this.mediaBody, this.mediaBodyFavorites, "favorites", -1);
     }
   }
 
