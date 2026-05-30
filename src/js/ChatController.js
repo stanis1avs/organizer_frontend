@@ -16,6 +16,7 @@ export default class ChatController {
     this.upperMessageElement = null;
     this.request = null;
     this.callbacks = callbacks || {};
+    this.fileToken = null;
   }
 
   initRequest() {
@@ -62,7 +63,8 @@ export default class ChatController {
       date,
       type,
       mediaBodies,
-      this.server
+      this.server,
+      this.fileToken
     ).createElement();
     if (geo) {
       const geoNode = new Geo().geoMessage(geo);
@@ -114,7 +116,8 @@ export default class ChatController {
     }
   }
 
-  renderMessages(data = [], favorites = [], position = 0, pinnedId = null) {
+  renderMessages(data = [], favorites = [], position = 0, pinnedId = null, fileToken = null) {
+    if (fileToken) this.fileToken = fileToken;
     this._lazyLoading = false;
     const initialLoadFlag = true;
     for (const message of data) {

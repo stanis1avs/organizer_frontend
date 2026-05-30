@@ -23,9 +23,10 @@ export default class Geo {
     const cordinates = document.createElement('a');
     cordinates.classList.add('geo_mesg');
     cordinates.classList.add('geo');
-    cordinates.innerText = geo;
-    cordinates.setAttribute('href', `https://yandex.ru/maps/?text=${cordinates.innerText}`);
+    cordinates.textContent = geo;
+    cordinates.setAttribute('href', `https://yandex.ru/maps/?text=${encodeURIComponent(geo)}`);
     cordinates.setAttribute('target', '_blank');
+    cordinates.setAttribute('rel', 'noopener noreferrer');
     return cordinates;
   }
 }

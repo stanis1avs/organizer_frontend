@@ -1,11 +1,17 @@
 export default class Messages {
-  constructor(name, id, date, type, mediaBodies, server) {
+  constructor(name, id, date, type, mediaBodies, server, fileToken = null) {
     this.id = id;
     this.name = name;
     this.date = date;
     this.type = type;
     this.media_bodies = mediaBodies;
     this.server = server;
+    this.fileToken = fileToken;
+  }
+
+  _fileUrl(name) {
+    const base = `${this.server}${name}`;
+    return this.fileToken ? `${base}?token=${encodeURIComponent(this.fileToken)}` : base;
   }
 
   createElement() {
@@ -85,7 +91,7 @@ export default class Messages {
     const audio = document.createElement("audio");
     audio.classList.add("message_media");
     audio.setAttribute("controls", "");
-    audio.src = `${this.server}${this.name}`;
+    audio.src = this._fileUrl(this.name);
     this.message_body.append(audio);
     this.message_body.dataset.id = this.id;
     const clone = this.message_body.cloneNode(true);
@@ -97,7 +103,7 @@ export default class Messages {
     const video = document.createElement("video");
     video.classList.add("message_media");
     video.setAttribute("controls", "");
-    video.src = `${this.server}${this.name}`;
+    video.src = this._fileUrl(this.name);
     this.message_body.append(video);
     this.message_body.dataset.id = this.id;
     const clone = this.message_body.cloneNode(true);
@@ -108,7 +114,7 @@ export default class Messages {
   messageBodyImage() {
     const image = document.createElement("img");
     image.classList.add("message_media");
-    image.src = `${this.server}${this.name}`;
+    image.src = this._fileUrl(this.name);
     image.alt = this.name;
     this.message_body.append(image);
     this.message_body.dataset.id = this.id;
@@ -120,7 +126,7 @@ export default class Messages {
   messageBodyFile() {
     const file = document.createElement("a");
     file.classList.add("message_file");
-    file.href = `${this.server}${this.name}`;
+    file.href = this._fileUrl(this.name);
     file.textContent = this.name;
     this.message_body.append(file);
     this.message_body.dataset.id = this.id;

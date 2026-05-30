@@ -76,7 +76,8 @@ export default class Request {
     }
 
     if (data.event === "load") {
-      this.callbacks.load?.(data.dB, data.favorites, data.position, data.pinned);
+      this.token = data.token || null;
+      this.callbacks.load?.(data.dB, data.favorites, data.position, data.pinned, data.token);
     }
     if (data.event === "showMessage") {
       this.callbacks.showMessage?.(data.id, data.message, data.date, data.geo);
