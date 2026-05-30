@@ -204,9 +204,12 @@ export default class ChatUI {
     on(this.closeMedia, "click", () => {
       const active =
         this.media && findIn(this.media, ".media_body_item_active");
-      if (active) active.classList.remove("media_body_item_active");
-      else this.media && this.media.classList.remove("media_active");
-
+      if (active) {
+        active.classList.remove("media_body_item_active");
+      } else {
+        this.media && this.media.classList.remove("media_active");
+        document.body.classList.remove("body_with_media_aside");
+      }
       if (this.mediaTitle) this.mediaTitle.textContent = "Shared media";
       this.mediaBody && this.mediaBody.classList.remove("media_body_inactive");
     });
@@ -254,6 +257,20 @@ export default class ChatUI {
     if (this.controller.request) {
       this.controller.request.callbacks.onConnect    = () => this._setWsStatus("connected");
       this.controller.request.callbacks.onDisconnect = () => this._setWsStatus("reconnecting");
+    }
+
+    // overlay tap-to-close for mobile drawers
+    const overlay = document.getElementById("panelOverlay");
+    if (overlay) {
+      on(overlay, "click", () => {
+        if (this.media && this.media.classList.contains("media_active")) {
+          this.media.classList.remove("media_active");
+          document.body.classList.remove("body_with_media_aside");
+        }
+        if (this.aiViewAnswers && this.aiViewAnswers.classList.contains("left-aside-active")) {
+          this.toggleAIMode(false);
+        }
+      });
     }
 
     this.setupAIControls();
@@ -527,107 +544,97 @@ export default class ChatUI {
     let controls = findIn(this.aiViewAnswers, ".ai-controls");
     if (!controls) {
       controls = createEl("div", ["ai-controls"]);
-      controls.style.padding = "12px";
-      controls.style.borderBottom = "1px solid rgba(255,255,255,0.03)";
       this.aiViewAnswers.appendChild(controls);
     }
 
-    // input
-    this.aiInput = findIn(controls, ".ai_input") || createEl("input", []);
-    this.aiInput.classList.add("ai_input");
-    this.aiInput.type = "text";
-    this.aiInput.placeholder = "Enter search query...";
-    this.aiInput.style.width = "100%";
-    this.aiInput.style.boxSizing = "border-box";
-    this.aiInput.style.padding = "8px";
-    this.aiInput.style.marginBottom = "8px";
-    controls.appendChild(this.aiInput);
+    // search input wrapper (CSS adds magnifier icon via ::before)
+    let inputWrap = findIn(controls, ".ai-input-wrap");
+    if (!inputWrap) {
+      inputWrap = createEl("div", ["ai-input-wrap"]);
+      controls.appendChild(inputWrap);
+    }
 
-    // small row for topK and alpha
+    this.aiInput = findIn(inputWrap, ".ai_input") || createEl("input", ["ai_input"]);
+    this.aiInput.type = "text";
+    this.aiInput.placeholder = "Поиск...";
+    inputWrap.appendChild(this.aiInput);
+
+    // params row (topK / alpha)
     let paramsRow = findIn(controls, ".ai_params");
     if (!paramsRow) {
       paramsRow = createEl("div", ["ai_params"]);
-      paramsRow.style.display = "flex";
-      paramsRow.style.gap = "8px";
-      paramsRow.style.marginBottom = "8px";
       controls.appendChild(paramsRow);
     }
-    // topK
-    this.aiTopK = findIn(paramsRow, ".ai_topk") || createEl("input", []);
-    this.aiTopK.classList.add("ai_topk");
+
+    this.aiTopK = findIn(paramsRow, ".ai_topk") || createEl("input", ["ai_topk"]);
     this.aiTopK.type = "number";
     this.aiTopK.min = "1";
     this.aiTopK.step = "1";
     this.aiTopK.value = this.aiTopK.value || "10";
-    this.aiTopK.title = "topK";
-    this.aiTopK.style.flex = "1";
-    this.aiTopK.style.padding = "6px";
+    this.aiTopK.title = "Top K results";
     paramsRow.appendChild(this.aiTopK);
 
-    // alpha
-    this.aiAlpha = findIn(paramsRow, ".ai_alpha") || createEl("input", []);
-    this.aiAlpha.classList.add("ai_alpha");
+    this.aiAlpha = findIn(paramsRow, ".ai_alpha") || createEl("input", ["ai_alpha"]);
     this.aiAlpha.type = "number";
     this.aiAlpha.min = "0";
     this.aiAlpha.max = "1";
     this.aiAlpha.step = "0.1";
     this.aiAlpha.value = this.aiAlpha.value || "0.6";
-    this.aiAlpha.title = "alpha";
-    this.aiAlpha.style.flex = "1";
-    this.aiAlpha.style.padding = "6px";
+    this.aiAlpha.title = "Vector/keyword blend (alpha)";
     paramsRow.appendChild(this.aiAlpha);
 
-    // actions row (clip + send)
+    // actions row (clip + search)
     let actions = findIn(controls, ".ai_actions");
     if (!actions) {
       actions = createEl("div", ["ai_actions"]);
-      actions.style.display = "flex";
-      actions.style.gap = "8px";
       controls.appendChild(actions);
     }
 
-    // clip button
-    this.aiClipBtn =
-      findIn(actions, ".ai_clip_btn") || createEl("button", ["ai_clip_btn"]);
+    this.aiClipBtn = findIn(actions, ".ai_clip_btn") || createEl("button", ["ai_clip_btn"]);
     this.aiClipBtn.type = "button";
     this.aiClipBtn.textContent = "📎";
-    this.aiClipBtn.title = "Attach file (not sent to search)";
-    this.aiClipBtn.style.padding = "6px 10px";
+    this.aiClipBtn.title = "Attach file";
     actions.appendChild(this.aiClipBtn);
 
-    // send button
-    this.aiSend =
-      findIn(actions, ".ai_send_btn") || createEl("button", ["ai_send_btn"]);
+    this.aiSend = findIn(actions, ".ai_send_btn") || createEl("button", ["ai_send_btn"]);
     this.aiSend.type = "button";
-    this.aiSend.textContent = "Search";
-    this.aiSend.style.padding = "6px 10px";
-    this.aiSend.style.flex = "1";
+    this.aiSend.textContent = "AI";
     actions.appendChild(this.aiSend);
+
+    // type-filter section
+    if (!findIn(controls, ".ai-type-section")) {
+      const typeSection = createEl("div", ["ai-type-section"]);
+      const typeLabel = createEl("div", ["ai-type-label"]);
+      typeLabel.textContent = "Тип";
+      typeSection.appendChild(typeLabel);
+
+      const typeList = createEl("ul", ["ai-type-list"]);
+      for (const t of ["audio", "video", "file", "geo"]) {
+        const li = createEl("li", ["ai-type-item", t]);
+        li.textContent = t;
+        on(li, "click", () => li.classList.toggle("active"));
+        typeList.appendChild(li);
+      }
+      typeSection.appendChild(typeList);
+      controls.appendChild(typeSection);
+    }
 
     // results container
     this.aiResultsRoot = findIn(this.aiViewAnswers, ".ai_results");
     if (!this.aiResultsRoot) {
       this.aiResultsRoot = createEl("div", ["ai_results"]);
-      this.aiResultsRoot.style.padding = "12px";
       this.aiViewAnswers.appendChild(this.aiResultsRoot);
     }
 
     // wire events
-    // send click
     on(this.aiSend, "click", () => this.handleAISubmit());
-    // enter on input
     this.aiInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         this.handleAISubmit();
       }
     });
-    // clip click -> open aiFileInput
-    on(
-      this.aiClipBtn,
-      "click",
-      () => this.aiFileInput && this.aiFileInput.click()
-    );
+    on(this.aiClipBtn, "click", () => this.aiFileInput && this.aiFileInput.click());
   }
 
   async handleAISubmit() {
