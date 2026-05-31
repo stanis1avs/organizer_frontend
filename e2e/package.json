@@ -1,0 +1,14 @@
+{
+  "name": "organizer-e2e",
+  "private": true,
+  "scripts": {
+    "test": "jest --runInBand",
+    "test:skip-build": "cross-env SKIP_BUILD=1 jest --runInBand"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "jest": "^29.7.0",
+    "puppeteer": "^22.0.0",
+    "ws": "^8.18.0"
+  }
+}

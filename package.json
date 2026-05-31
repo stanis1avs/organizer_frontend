@@ -14,7 +14,9 @@
     "preshow:coverage": "npm run coverage",
     "show:coverage": "live-server coverage/lcov-report",
     "preshow:dist": "npm run build",
-    "show:dist": "live-server dist"
+    "show:dist": "live-server dist",
+    "test:e2e": "npm --prefix e2e run test",
+    "test:e2e:skip-build": "npm --prefix e2e run test:skip-build"
   },
   "browserslist": "> 0.25%, not dead",
   "repository": {
