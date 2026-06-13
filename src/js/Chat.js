@@ -104,9 +104,17 @@ export default class ChatUI {
     this.aiFileInput.type = "file";
     this.aiFileInput.style.display = "none";
     this.aiFileInput.multiple = false;
-    // accept audio/video/images
-    this.aiFileInput.accept = "audio/*,video/*,image/*";
+    this.aiFileInput.accept = "image/*";
     (this.aiViewAnswers || this.root).appendChild(this.aiFileInput);
+    this.aiFileInput.addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      this._aiSelectedImage = file;
+      if (this.aiClipBtn) {
+        this.aiClipBtn.textContent = "📎✓";
+        this.aiClipBtn.title = file.name;
+      }
+    });
 
     // prepare ai controls placeholders (will be rendered into left-aside on init)
     this.aiInput = null;
@@ -115,6 +123,7 @@ export default class ChatUI {
     this.aiSend = null;
     this.aiClipBtn = null;
     this.aiResultsRoot = null;
+    this._aiSelectedImage = null;
 
     // bound handlers (используются и при навешивании, и при снятии в dispose)
     this._aiBound = {
@@ -641,26 +650,41 @@ export default class ChatUI {
   async handleAISubmit() {
     if (!this.aiInput) return;
     const query = String(this.aiInput.value || "").trim();
-    if (!query) {
-      // show small hint
-      this.renderAIError(new Error("Query is empty"));
+    const hasImage = !!this._aiSelectedImage;
+
+    if (!query && !hasImage) {
+      this.renderAIError(new Error("Введите запрос или выберите изображение"));
       return;
     }
 
     const topK = Number(this.aiTopK?.value || 10);
     const alpha = Number(this.aiAlpha?.value || 0.6);
-    // show loading UI
     this.aiResultsRoot.innerHTML = '<div class="ai-loading">Searching…</div>';
 
     try {
-      // controller.searchAI will POST to `${this.server}search`
-      const res = await this.controller.searchAI(query, topK, alpha);
-      // controller triggers callback onAISearchResults which calls renderAIResults too,
-      // but also render here for instant feedback
+      let res;
+      if (hasImage) {
+        const imageData = await this._readFileAsBase64(this._aiSelectedImage);
+        res = await this.controller.searchAIByImage(imageData, topK, alpha);
+        this._aiSelectedImage = null;
+        if (this.aiClipBtn) { this.aiClipBtn.textContent = "📎"; this.aiClipBtn.title = "Attach file"; }
+        if (this.aiFileInput) this.aiFileInput.value = "";
+      } else {
+        res = await this.controller.searchAI(query, topK, alpha);
+      }
       this.renderAIResults(res);
     } catch (err) {
       this.renderAIError(err);
     }
+  }
+
+  _readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }
 
   renderAIResults(data) {

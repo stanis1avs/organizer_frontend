@@ -224,6 +224,29 @@ export default class ChatController {
     }
   }
 
+  async searchAIByImage(imageData, topK = 10, alpha = 0.6) {
+    const url = `${this.server}search`;
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageData, topK: Number(topK) || 10, alpha: Number(alpha) || 0.6 }),
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        const err = new Error(`Search failed: ${res.status} ${text}`);
+        this.callbacks.onAIError?.(err);
+        throw err;
+      }
+      const data = await res.json();
+      this.callbacks.onAISearchResults?.(data);
+      return data;
+    } catch (err) {
+      this.callbacks.onAIError?.(err);
+      throw err;
+    }
+  }
+
   async searchAI(query, topK = 10, alpha = 0.6) {
     if (!query || !String(query).trim()) {
       const err = new Error("Empty query");
