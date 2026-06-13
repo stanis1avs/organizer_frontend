@@ -247,7 +247,7 @@ a:hover { text-decoration: underline; }
   align-items: flex-end;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 12px 14px;
+  padding: 34px 14px 12px;
   gap: 5px;
   scrollbar-width: thin;
   scrollbar-color: var(--border-2) transparent;

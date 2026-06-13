@@ -583,6 +583,7 @@ export default class ChatUI {
     this.aiAlpha.title = "Vector/keyword blend (alpha)";
     paramsRow.appendChild(this.aiAlpha);
 
+
     // actions row (clip + search)
     let actions = findIn(controls, ".ai_actions");
     if (!actions) {
@@ -648,7 +649,6 @@ export default class ChatUI {
 
     const topK = Number(this.aiTopK?.value || 10);
     const alpha = Number(this.aiAlpha?.value || 0.6);
-
     // show loading UI
     this.aiResultsRoot.innerHTML = '<div class="ai-loading">Searching…</div>';
 
@@ -672,7 +672,7 @@ export default class ChatUI {
 
     if (items.length === 0) {
       const empty = createEl("div", ["ai-result-empty"]);
-      empty.textContent = "No results found.";
+      empty.textContent = "Ничего не найдено. Попробуйте снизить Alpha.";
       this.aiResultsRoot.appendChild(empty);
       return;
     }

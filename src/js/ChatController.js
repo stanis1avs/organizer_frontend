@@ -119,6 +119,7 @@ export default class ChatController {
   renderMessages(data = [], favorites = [], position = 0, pinnedId = null, fileToken = null) {
     if (fileToken) this.fileToken = fileToken;
     this._lazyLoading = false;
+    if (this.nodes.messages) this.nodes.messages.innerHTML = '';
     const initialLoadFlag = true;
     for (const message of data) {
       const messageElement = this.showMessage(

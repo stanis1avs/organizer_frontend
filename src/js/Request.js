@@ -1,3 +1,5 @@
+import { enqueueOffline, flushOfflineQueue } from './swManager.js';
+
 export default class Request {
   constructor(server) {
     this.server = server;
@@ -52,6 +54,12 @@ export default class Request {
     this._reconnectAttempts = 0;  // сброс счётчика при успешном подключении
     this.ws.send(JSON.stringify(this.initialData));
     this.callbacks.onConnect?.();
+    // Replay messages queued while the connection was down
+    flushOfflineQueue((item) => {
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        this.ws.send(JSON.stringify({ event: item.event, message: item.message }));
+      }
+    }).catch(() => {});
   }
 
   onClose() {
@@ -112,6 +120,10 @@ export default class Request {
         formData.append("geo", message.geo ?? "");
         this.sendFile(formData);
       }
+    } else if (!this._destroyed && (message.type === 'text' || message.type == null)) {
+      // Queue text messages for delivery when the connection is restored
+      enqueueOffline({ event, message }).catch(() => {});
+      console.info("[WS] Offline — message queued for background sync");
     } else {
       console.warn("[WS] Cannot send — connection not open (readyState:", this.ws?.readyState, ")");
     }

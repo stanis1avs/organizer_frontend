@@ -1,4 +1,5 @@
 import './css/style.css';
 import './js/app';
+import { registerSW } from './js/swManager';
 
-// TODO: write your code in app.js
+registerSW();
